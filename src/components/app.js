@@ -1,81 +1,137 @@
 import React, {Component} from 'react';
+import ReactDOM from "react-dom";
 import ReactJWPlayer from 'react-jw-player';
 import FacebookLogin from 'react-facebook-login';
 import GoogleLogin from 'react-google-login';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import TextField from 'material-ui/TextField';
-import DatePicker from 'material-ui/DatePicker';
+import Slider from 'react-slick';
+import PrevButton from './prevButton';
+import NextButton from './nextButton';
+import Nuka from 'nuka-carousel';
+import createClass from 'create-react-class';
+import './../../style/style.css';
 
-const muiTheme = getMuiTheme({
-  textField: {
-    textColor: '#76FF03',
-  },
-  datePicker : {
-     color: "#E0E0E0",
-     textColor:"#E0E0E0" ,
-     calendarTextColor: "#FFFF00",
-     selectColor:"#F4511E" ,
-     selectTextColor: "#BF360C",
-     calendarYearBackgroundColor: "#00C853",
-     headerColor:"#00C853"
-  }
-});
+class App extends Component {
 
-export default class App extends Component {
-
-  responseFacebook(response) {
-    console.log("responseFacebook: ",response);
+  constructor(props) {
+    super(props);
+    this.next = this.next.bind(this)
+  this.previous = this.previous.bind(this)
+    this.state = {
+      start_count: 0,
+      end_count: 10
+    }
   }
 
-  responseGoogle(response) {
-    console.log("responseGoogle: ",response);
+  next() {
+    this.slider.slickNext()
+    this.setState({
+      start_count:this.state.start_count+10,
+      end_count:this.state.end_count+10
+    });
+  }
+  previous() {
+    if(this.state.start_count>0 && this.state.start_count>10){
+      this.setState({
+        start_count:this.state.start_count-10,
+        end_count:this.state.end_count-10
+      });
+    }
+    this.slider.slickPrev()
+  }
+
+
+  fetchNewSliders(start_count,end_count){
+    // this.setState({
+    //   start_count:start_count,
+    //    end_count:end_count
+    // });
+  console.log("fetchNewSliders: start_count>>> "+start_count+" / end_count: "+end_count);
+  }
+
+  onClickedNext() {
+    this.state.start_count = this.state.start_count+10;
+    this.state.end_count = this.state.end_count+10;
+    // this.setState({
+    //   start_count:this.state.start_count+10,
+    //   end_count:this.state.end_count+10
+    // });
+    this.fetchNewSliders(this.state.start_count,this.state.end_count)
+  }
+
+  onClickedPrev() {
+    if(this.state.start_count>0 && this.state.start_count>10){
+      this.state.start_count = this.state.start_count-10;
+      this.state.end_count = this.state.end_count-10;
+      // this.setState({
+      //   start_count:this.state.start_count-10,
+      //   end_count:this.state.end_count-10
+      // });
+    }
+    this.fetchNewSliders(this.state.start_count,this.state.end_count)
+  }
+
+  renderSlides() {
+    return (
+      <div>
+        <img src="http://placekitten.com/g/400/200"/>
+      </div>
+    );
   }
 
   render() {
+
+    const settings = {
+      infinite: true,
+      speed: 500,
+      slidesToShow: 3,
+      slidesToScroll: 1,
+      arrows:false
+    };
+
     return (
-      <div className="container">
 
-        <div className="row">
-          <MuiThemeProvider muiTheme={muiTheme}>
-            <TextField hintText="Hint Text"/>
-          </MuiThemeProvider>
+      <div className="container" style={{
+        background: "#9C27B0"
+      }}>
+
+        <div style={{
+          margin: 100
+        }}>
+          <Slider ref={c => this.slider = c } {...settings}>
+            {/* {this.renderSlides()} */}
+            <div>
+              <img src="http://placekitten.com/g/400/200"/>
+            </div>
+            <div>
+              <img src="http://placekitten.com/g/400/200"/>
+            </div>
+            <div>
+              <img src="http://placekitten.com/g/400/200"/>
+            </div>
+            <div>
+              <img src="http://placekitten.com/g/400/200"/>
+            </div>
+            <div>
+              <img src="http://placekitten.com/g/400/200"/>
+            </div>
+            <div>
+              <img src="http://placekitten.com/g/400/200"/>
+            </div>
+          </Slider>
+          <div style={{textAlign: 'center'}}>
+                    <button className='button' onClick={this.previous}>Previous</button>
+                    <button className='button' onClick={this.next}>Next</button>
+                    <button className='button' >All</button>
+                  </div>
+
+Start Count : {this.state.start_count}
+End Count :  {this.state.end_count}
+
         </div>
-
-        <div className="row">
-          <MuiThemeProvider muiTheme={muiTheme}>
-            <DatePicker hintText="Portrait Dialog" />
-          </MuiThemeProvider>
-        </div>
-
-        <div className="row">
-          <div className="col-sm">
-            Facebook:
-          </div>
-          <div className="col-sm">
-            <FacebookLogin
-              appId="114740925982514"
-              autoLoad={true}
-              fields="email"
-              onClick={this.componentClicked}
-              callback={this.responseFacebook}/>
-          </div>
-        </div>
-
-        <div className="row">
-          <div className="col-sm">
-            Google:
-          </div>
-          <div className="col-sm">
-            <GoogleLogin
-              clientId="126614811788-jaq8g64slh7uqe9k3uf1km0dpkmj00lo.apps.googleusercontent.com"
-              buttonText="Login"
-              onSuccess={this.responseGoogle}
-              onFailure={this.responseGoogle}/>
-          </div>
-        </div>
-
       </div>
     );
   }
 }
+
+export default App;

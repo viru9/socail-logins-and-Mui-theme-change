@@ -8,6 +8,14 @@ module.exports = merge(common, {
       'process.env': {
         'NODE_ENV': JSON.stringify('production')
       }
-    })]
+    })],
+  devServer: {
+    historyApiFallback: true,
+    contentBase: './',
+    inline: true,
+    port: 9003,
+    host: '127.0.0.1',
+    disableHostCheck: true
+  }
 
 });
